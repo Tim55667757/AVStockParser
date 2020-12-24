@@ -8,7 +8,7 @@ All traders sometimes need to get historical data of stocks for further price an
 
 But there are many online services that provide APIs to get stock price data automatically. One of these service is Alpha Vantage. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
 
-**AVStockParser** is a simple library that can be use as python module or console CLI programm. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings You'll get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
+**AVStockParser** is a simple library that can be use as python module or console CLI programm. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. You'll get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
 
 See russian readme here (инструкция на русском здесь): https://github.com/Tim55667757/AVStockParser/blob/master/README_RU.md
 
@@ -30,7 +30,7 @@ pip show avstockparser
 
 Alpha Vantage service use authentication with api key. Request free api key at this page: https://www.alphavantage.co/support/#api-key
 
-Api key is a alphanumeric string token. You must send token with every request to server. Just use this flag ```--api-key "your token here"``` or set apiKey variable for method ```AVParseToPD(apiKey="your token here"```.
+Api key is a alphanumeric string token. You must send token with every request to server. Just use this flag `--api-key "your token here"` or set apiKey variable for method `AVParseToPD(apiKey="your token here"`.
 
 
 ## Usage examples
