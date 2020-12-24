@@ -3,7 +3,7 @@
 
 
 # Module: Alpha Vantage Stock History Parser.
-# Get time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings.
+# Request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings.
 # Alpha Vantage API Documentation: https://www.alphavantage.co/documentation/
 # Alpha Vantage use NASDAQ list of stocks: https://www.nasdaq.com/market-activity/stocks/screener
 # In additional you can see more analytics by tickers here: https://www.infrontanalytics.com/fe-en/NL0009805522/Yandex-NV/stock-performance
