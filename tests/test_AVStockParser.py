@@ -5,7 +5,8 @@ import os
 import pandas as pd
 from avstockparser import AVStockParser
 
-class TestBaseMethods():
+
+class TestBaseMethods:
 
     @pytest.fixture(scope='function', autouse=True)
     def init(self):
