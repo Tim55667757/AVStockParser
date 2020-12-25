@@ -31,19 +31,25 @@ uLogger.handlers[0].level = 20  # info level by default for STDOUT
 uLogger.handlers[1].level = 10  # debug level by default for log.txt
 
 
-def AVParseToPD(reqURL=r"https://www.alphavantage.co/query?", apiKey=None, output=None, ticker="YNDX",
+def AVParseToPD(reqURL=r"https://www.alphavantage.co/query?", apiKey=None, output=None, ticker=None,
                 period="TIME_SERIES_INTRADAY", interval="60min", size="compact", retry=5):
     """
     Get and parse stock data from Alpha Vantage service. Save to .csv if needed. Return pandas dataframe.
-    :param reqURL: base api requests url, default is r"https://www.alphavantage.co/query?".
-    :param apiKey: Alpha Vantage service's api key (alphanumeric string token), default is None.
-    :param output: full path to .csv-file, default is None mean that function return only pandas dataframe object.
-    :param ticker: stock ticker, e.g. "GOOGL" or "YNDX".
-    :param period: value for "function" AV api parameter - "TIME_SERIES_INTRADAY", "TIME_SERIES_DAILY", "TIME_SERIES_WEEKLY", "TIME_SERIES_MONTHLY" etc, default is "TIME_SERIES_INTRADAY".
-    :param interval: value in minutes, used only if period="TIME_SERIES_INTRADAY". Values can be "1min", "5min", "15min", "30min", "60min", default is "60min".
-    :param size: how many last candles returns for history, e.g. "full" or "compact". Default is "compact" means that api returns only 100 values of stock history data (more faster).
-    :param retry: number of connection retry for data request before raise exception.
+    :param reqURL: string - base api requests url, default is r"https://www.alphavantage.co/query?".
+    :param apiKey: string - Alpha Vantage service's api key (alphanumeric string token), default is None.
+    :param output: string - full path to .csv-file, default is None mean that function return only pandas dataframe object.
+    :param ticker: string - stock ticker, e.g. "GOOGL" or "YNDX".
+    :param period: string - value for "function" AV api parameter - "TIME_SERIES_INTRADAY", "TIME_SERIES_DAILY", "TIME_SERIES_WEEKLY", "TIME_SERIES_MONTHLY" etc, default is "TIME_SERIES_INTRADAY".
+    :param interval: string - value in minutes, used only if period="TIME_SERIES_INTRADAY". Values can be "1min", "5min", "15min", "30min", "60min", default is "60min".
+    :param size: string - how many last candles returns for history, e.g. "full" or "compact". Default is "compact" means that api returns only 100 values of stock history data (more faster).
+    :param retry: int - number of connection retry for data request before raise exception.
     """
+    if apiKey is None or not apiKey:
+        raise Exception("apiKey variable must be required!")
+
+    if ticker is None or not ticker:
+        raise Exception("ticker variable must be required!")
+
     respJSON = {}
     intervalParam = "&interval={}".format(interval) if period == "TIME_SERIES_INTRADAY" else ""
     req = "{}function={}&symbol={}{}&outputsize={}&apikey={}".format(reqURL, period, ticker, intervalParam, size, apiKey)
@@ -138,21 +144,21 @@ def ParseArgs():
     """
     parser = ArgumentParser()  # command-line string parser
 
-    parser.description = "Alpha Vantage data parser. Get, parse and save stock history as .csv-file or pandas dataframe. See examples: https://tim55667757.github.io/AVStockParser"
+    parser.description = "Alpha Vantage data parser. Get, parse, and save stock history as .csv-file or pandas dataframe. See examples: https://tim55667757.github.io/AVStockParser"
     parser.usage = "python AVStockParser.py [some options] [one command]"
 
     # options:
     parser.add_argument("--api-key", type=str, required=True, help="Option (required): Alpha Vantage service's api key. Request free api key at this page: https://www.alphavantage.co/support/#api-key")
-    parser.add_argument("--ticker", type=str, required=True, help="Option (required): stock ticker, e.g. GOOGL or 'YNDX'.")
-    parser.add_argument("--output", type=str, default=None, help="Option: full path to .csv output file. Default is None, mean that function return only pandas dataframe.")
+    parser.add_argument("--ticker", type=str, required=True, help="Option (required): stock ticker, e.g., 'GOOGL' or 'YNDX'.")
+    parser.add_argument("--output", type=str, default=None, help="Option: full path to .csv output file. Default is None mean that function return only pandas dataframe.")
     parser.add_argument("--period", type=str, default="TIME_SERIES_INTRADAY", help="Option: values can be 'TIME_SERIES_INTRADAY', 'TIME_SERIES_DAILY', 'TIME_SERIES_WEEKLY', 'TIME_SERIES_MONTHLY'. Default: 'TIME_SERIES_INTRADAY' means that api returns intraday stock history data with pre-define interval. More examples: https://www.alphavantage.co/documentation/")
-    parser.add_argument("--interval", type=str, default="60min", help="Option: '1min', '5min', '15min', '30min' or '60min'. This is intraday time period used only with --period='TIME_SERIES_INTRADAY' key. Default: '60min' means that api returns stock history with 60 min interval.")
+    parser.add_argument("--interval", type=str, default="60min", help="Option: '1min', '5min', '15min', '30min' or '60min'. This is intraday period used only with --period='TIME_SERIES_INTRADAY' key. Default: '60min' means that api returns stock history with 60 min interval.")
     parser.add_argument("--size", type=str, default="compact", help="Option: how many last candles returns for history. Values can be 'full' or 'compact'. This parameter used for 'outputsize' AV api parameter. Default: 'compact' means that api returns only 100 values of stock history data.")
-    parser.add_argument("--retry", type=int, default=3, help="Option: number of connection retry for data request before raise exception. Default is 3.")
-    parser.add_argument("--debug-level", type=int, default=20, help="Option: showing STDOUT messages of minimal debug level, e.g. 10 = DEBUG, 20 = INFO, 30 = WARNING, 40 = ERROR, 50 = CRITICAL.")
+    parser.add_argument("--retry", type=int, default=3, help="Option: number of connections retry for data request before raise exception. Default is 3.")
+    parser.add_argument("--debug-level", type=int, default=20, help="Option: showing STDOUT messages of minimal debug level, e.g., 10 = DEBUG, 20 = INFO, 30 = WARNING, 40 = ERROR, 50 = CRITICAL.")
 
     # commands:
-    parser.add_argument("--parse", action="store_true", help="Command: get, parse and save stock history as pandas dataframe or .csv-file if --output key is define.")
+    parser.add_argument("--parse", action="store_true", help="Command: get, parse, and save stock history as pandas dataframe or .csv-file if --output key is defined.")
 
     cmdArgs = parser.parse_args()
     return cmdArgs
