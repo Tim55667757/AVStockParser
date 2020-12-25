@@ -4,11 +4,11 @@
 [![pypi](https://img.shields.io/pypi/v/AVStockParser.svg)](https://pypi.python.org/pypi/AVStockParser)
 [![license](https://img.shields.io/pypi/l/AVStockParser.svg)](https://github.com/Tim55667757/AVStockParser/blob/master/LICENSE)
 
-All traders sometimes need to get historical data of stocks for further price analysis and charting. Most often this data is supplied for paid or you have to spend a lot of time manually uploading data from special sites.
+All traders sometimes need to get historical data of stocks for further price analysis and charting. Most often this data is supplied for paid or you must spend a lot of time manually uploading data from special sites.
 
-But there are many online services that provide APIs to get stock price data automatically. One of these service is Alpha Vantage. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
+But there are many online services that provide APIs to get stock price data automatically. One of this service is Alpha Vantage. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
 
-**AVStockParser** is a simple library that can be use as python module or console CLI programm. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. You'll get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
+**AVStockParser** is a simple library that can be use as python module or console CLI program. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. You will get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
 
 See russian readme here (инструкция на русском здесь): https://github.com/Tim55667757/AVStockParser/blob/master/README_RU.md
 
@@ -30,7 +30,7 @@ pip show avstockparser
 
 Alpha Vantage service use authentication with api key. Request free api key at this page: https://www.alphavantage.co/support/#api-key
 
-Api key is a alphanumeric string token. You must send token with every request to server. Just use this flag `--api-key "your token here"` or set apiKey variable for method `AVParseToPD(apiKey="your token here"`.
+Api key is a alphanumeric string token. You must send token with every request to server. When you work with AVStockParser just use this flag `--api-key "your token here"` or set apiKey variable for method `AVParseToPD(apiKey="your token here"`.
 
 
 ## Usage examples
@@ -46,7 +46,7 @@ Output:
 ```
 usage: python AVStockParser.py [some options] [one command]
 
-Alpha Vantage data parser. Get, parse and save stock history as .csv-file or
+Alpha Vantage data parser. Get, parse, and save stock history as .csv-file or
 pandas dataframe. See examples: https://tim55667757.github.io/AVStockParser
 
 optional arguments:
@@ -54,9 +54,10 @@ optional arguments:
   --api-key API_KEY     Option (required): Alpha Vantage service's api key.
                         Request free api key at this page:
                         https://www.alphavantage.co/support/#api-key
-  --ticker TICKER       Option (required): stock ticker, e.g. GOOGL or 'YNDX'.
-  --output OUTPUT       Option: full path to .csv output file. Default is
-                        None, mean that function return only pandas dataframe.
+  --ticker TICKER       Option (required): stock ticker, e.g., 'GOOGL' or
+                        'YNDX'.
+  --output OUTPUT       Option: full path to .csv output file. Default is None
+                        mean that function return only pandas dataframe.
   --period PERIOD       Option: values can be 'TIME_SERIES_INTRADAY',
                         'TIME_SERIES_DAILY', 'TIME_SERIES_WEEKLY',
                         'TIME_SERIES_MONTHLY'. Default: 'TIME_SERIES_INTRADAY'
@@ -64,7 +65,7 @@ optional arguments:
                         with pre-define interval. More examples:
                         https://www.alphavantage.co/documentation/
   --interval INTERVAL   Option: '1min', '5min', '15min', '30min' or '60min'.
-                        This is intraday time period used only with
+                        This is intraday period used only with
                         --period='TIME_SERIES_INTRADAY' key. Default: '60min'
                         means that api returns stock history with 60 min
                         interval.
@@ -73,22 +74,22 @@ optional arguments:
                         for 'outputsize' AV api parameter. Default: 'compact'
                         means that api returns only 100 values of stock
                         history data.
-  --retry RETRY         Option: number of connection retry for data request
+  --retry RETRY         Option: number of connections retry for data request
                         before raise exception. Default is 3.
   --debug-level DEBUG_LEVEL
                         Option: showing STDOUT messages of minimal debug
-                        level, e.g. 10 = DEBUG, 20 = INFO, 30 = WARNING, 40 =
+                        level, e.g., 10 = DEBUG, 20 = INFO, 30 = WARNING, 40 =
                         ERROR, 50 = CRITICAL.
-  --parse               Command: get, parse and save stock history as pandas
-                        dataframe or .csv-file if --output key is define.
+  --parse               Command: get, parse, and save stock history as pandas
+                        dataframe or .csv-file if --output key is defined.
 ```
 
-Let's try to get daily candlesticks of YNDX stock into file YNDX1440.csv. The command may be like this:
+Let us try to get daily candlesticks of YNDX stock into file YNDX1440.csv. The command may be like this:
 ```commandline
 avstockparser --debug-level 10 --api-key "your token here" --ticker YNDX --period TIME_SERIES_DAILY --size full --output YNDX1440.csv --parse
 ```
 
-If successful, you should get a log output similar to the following:
+If successful, you should get a log output like the following:
 ```
 AVStockParser.py    L:184  DEBUG   [2020-12-25 01:03:13,459] Alpha Vantage data parser started: 2020-12-25 01:03:13
 AVStockParser.py    L:51   DEBUG   [2020-12-25 01:03:13,459] Request to Alpha Vantage: [https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=YNDX&outputsize=full&apikey=***]
@@ -107,9 +108,9 @@ AVStockParser.py    L:235  DEBUG   [2020-12-25 01:03:15,028] Alpha Vantage data 
 Process finished with exit code 0
 ```
 
-For key `--period` you can use values: `TIME_SERIES_DAILY`, `TIME_SERIES_WEEKLY` and `TIME_SERIES_MONTHLY` to get daily, weekly and monthly candlesticks. Default is `TIME_SERIES_INTRADAY`.
+For key `--period` you can use values: `TIME_SERIES_DAILY`, `TIME_SERIES_WEEKLY` and `TIME_SERIES_MONTHLY` to get daily, weekly, and monthly candlesticks. Default is `TIME_SERIES_INTRADAY`.
 
-In another example let's try to get intraday hourly candlesticks of MMM stock into file MMM60.csv. The command may be like this:
+In another example let us try to get intraday hourly candlesticks of MMM stock into file MMM60.csv. The command may be like this:
 ```commandline
 avstockparser --debug-level 10 --api-key "your token here" --ticker MMM --period TIME_SERIES_INTRADAY --interval 60min --size compact --output MMM60.csv --parse
 ```
@@ -151,7 +152,7 @@ Key `--interval` use only with `--period TIME_SERIES_INTRADAY`. Intraday interva
 
 ### Using import
 
-Let's look only one simple example of requesting history of IBM stock as pandas dataframe:
+Let us look only one simple example of requesting history of IBM stock as pandas dataframe:
 ```
 from avstockparser.AVStockParser import AVParseToPD as Parser
 
