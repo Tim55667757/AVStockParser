@@ -6,7 +6,7 @@
 
 All traders sometimes need to get historical data of stocks for further price analysis and charting. Most often this data is supplied for paid or you must spend a lot of time manually uploading data from special sites.
 
-But there are many online services that provide APIs to get stock price data automatically. One of this service is Alpha Vantage. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
+But there are many online services that provide APIs to get stock price data automatically. One of this service is Alpha Vantage. The main data source for this service is the NASDAQ exchange. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
 
 **AVStockParser** is a simple library that can be use as python module or console CLI program. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. You will get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
 
