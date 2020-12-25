@@ -4,45 +4,44 @@
 [![pypi](https://img.shields.io/pypi/v/AVStockParser.svg)](https://pypi.python.org/pypi/AVStockParser)
 [![license](https://img.shields.io/pypi/l/AVStockParser.svg)](https://github.com/Tim55667757/AVStockParser/blob/master/LICENSE)
 
-All traders sometimes need to get historical data of stocks for further price analysis and charting. Most often this data is supplied for paid or you must spend a lot of time manually uploading data from special sites.
+Трейдерам необходимо получать исторические данные по акциям для дальнейшего анализа цен и построения графиков. Чаще всего эти данные платные или приходится тратить много времени и вручную загружать их со специальных сайтов.
 
-But there are many online services that provide APIs to get stock price data automatically. One of this service is Alpha Vantage. The main data source for this service is the NASDAQ exchange. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
+Но есть множество онлайн-сервисов, которые предоставляют API для автоматического получения данных о ценах на акции. Например, Alpha Vantage. Основной источник данных для этого сервиса — биржа NASDAQ. Подробная документация по работе с Alpha Vantage API здесь: https://www.alphavantage.co/documentation/
 
-**AVStockParser** is a simple library that can be use as python module or console CLI program. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. You will get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
+**AVStockParser** это простая библиотека, которую можно использовать как python-модуль или запускать из командной строки и получать данные от Alpha Vantage. AVStockParser запрашивает историю цен на акции в формате .json с сайта www.alphavantage.co и конвертирует их в pandas dataframe или в .csv-файл, которые содержат OHLCV-свечи в каждой строке. Вы получаете таблицу, которая содержит колонки данных в следующей последовательности: "date", "time", "open", "high", "low", "close", "volume". Одна строка — это набор данных для построения одной "японской свечи" (candlestick).
 
-See russian readme here (инструкция на русском здесь): https://github.com/Tim55667757/AVStockParser/blob/master/README_RU.md
+Инструкция на английском здесь (see english readme here): https://github.com/Tim55667757/AVStockParser/blob/master/README.md
 
+## Как установить
 
-## Setup
-
-The easiest way is to install via PyPI:
+Проще всего использовать установку через PyPI:
 ```commandline
 pip install avstockparser
 ```
 
-After that, you can check the installation with the command:
+После этого можно проверить установку командой:
 ```commandline
 pip show avstockparser
 ```
 
 
-## Auth
+## Аутентификация
 
-Alpha Vantage service use authentication with api key. Request free api key at this page: https://www.alphavantage.co/support/#api-key
+Сервис Alpha Vantage использует для аутентификации апи-кей. Запросить бесплатный ключ можно тут: https://www.alphavantage.co/support/#api-key
 
-Api key is a alphanumeric string token. You must send token with every request to server. When you work with AVStockParser just use this flag `--api-key "your token here"` or set apiKey variable for method `AVParseToPD(apiKey="your token here"`.
+Апи-кей — это алфавитно-цифровой токен. Этот токен необходимо отправлять на сервер с каждым запросом. Для этого, при работе с библиотекой AVStockParser, просто используйте ключ `--api-key "your token here"` или указывайте апи-кей при вызове метода: ```AVParseToPD(apiKey="your token here"```.
 
 
-## Usage examples
+## Примеры использования
 
-### From the command line
+### Из командной строки
 
-Get help:
+Внутренняя справка по ключам:
 ```commandline
 avstockparser --help
 ```
 
-Output:
+Вывод:
 ```
 usage: python AVStockParser.py [some options] [one command]
 
@@ -84,12 +83,12 @@ optional arguments:
                         dataframe or .csv-file if --output key is defined.
 ```
 
-Let us try to get daily candlesticks of YNDX stock into file YNDX1440.csv. The command may be like this:
+Давайте попробуем получить дневные свечи по акциям Яндекса (тикер YNDX) и сохранить их в файл YNDX1440.csv. Команда может выглядеть как-то так:
 ```commandline
 avstockparser --debug-level 10 --api-key "your token here" --ticker YNDX --period TIME_SERIES_DAILY --size full --output YNDX1440.csv --parse
 ```
 
-If successful, you should get a log output like the following:
+В случае успеха вы должны получить вывод логов примерно следующего содержания:
 ```
 AVStockParser.py    L:184  DEBUG   [2020-12-25 01:03:13,459] Alpha Vantage data parser started: 2020-12-25 01:03:13
 AVStockParser.py    L:51   DEBUG   [2020-12-25 01:03:13,459] Request to Alpha Vantage: [https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=YNDX&outputsize=full&apikey=***]
@@ -108,14 +107,14 @@ AVStockParser.py    L:235  DEBUG   [2020-12-25 01:03:15,028] Alpha Vantage data 
 Process finished with exit code 0
 ```
 
-For key `--period` you can use values: `TIME_SERIES_DAILY`, `TIME_SERIES_WEEKLY` and `TIME_SERIES_MONTHLY` to get daily, weekly, and monthly candlesticks. Default is `TIME_SERIES_INTRADAY`.
+Для консольного ключа `--period` вы можете указывать значения: `TIME_SERIES_DAILY`, `TIME_SERIES_WEEKLY` и `TIME_SERIES_MONTHLY` для получения дневных, недельных и месячных свечей соответственно. По умолчанию используется значение `TIME_SERIES_INTRADAY`.
 
-In another example let us try to get intraday hourly candlesticks of MMM stock into file MMM60.csv. The command may be like this:
+В следующем примере давайте попробуем получить внутридневные часовые свечи по акциям 3M (тикер MMM) и сохранить их в файл MMM60.csv. Команда может быть примерно такой:
 ```commandline
 avstockparser --debug-level 10 --api-key "your token here" --ticker MMM --period TIME_SERIES_INTRADAY --interval 60min --size compact --output MMM60.csv --parse
 ```
 
-If successful, you will receive something like this output:
+В случае успеха вы получите вывод, похожий на этот:
 ```
 AVStockParser.py    L:184  DEBUG   [2020-12-25 01:09:44,601] Alpha Vantage data parser started: 2020-12-25 01:09:44
 AVStockParser.py    L:51   DEBUG   [2020-12-25 01:09:44,601] Request to Alpha Vantage: [https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MMM&interval=60min&outputsize=compact&apikey=***]
@@ -134,7 +133,7 @@ AVStockParser.py    L:235  DEBUG   [2020-12-25 01:09:45,555] Alpha Vantage data 
 Process finished with exit code 0
 ```
 
-The file ./MMM60.csv will be completely similar and include the same columns but with hourly data: "date", "time", "open", "high", "low", "close", "volume":
+Файл ./MMM60.csv из этого примера будет содержать похожие данные по часовым свечам и столбцы: "date", "time", "open", "high", "low", "close", "volume":
 ```
 2020.12.11,09:00,171.9100,171.9100,171.5500,171.8300,1663
 2020.12.11,10:00,172.0100,173.6800,172.0100,173.5900,214065
@@ -145,19 +144,20 @@ The file ./MMM60.csv will be completely similar and include the same columns but
 2020.12.23,18:00,173.9900,173.9900,173.9900,173.9900,1410
 ```
 
-Key `--size` may be `full` (Alpha Vantage service return a lot of history candles) or `compact` (only last 100 candles).
+Ключ `--size` может принимать значение `full` (Alpha Vantage сервис отправит всю доступную историческую информацию по свечам) или `compact` (будут отправлены только последние 100 свечей).
 
-Key `--interval` use only with `--period TIME_SERIES_INTRADAY`. Intraday intervals of history candles may be only `1min`, `5min`, `15min`, `30min` or `60min`.
+Ключ `--interval` используется только с ключом и значением `--period TIME_SERIES_INTRADAY`. Интервалы для внутридневных свечей могут принимать значения: `1min`, `5min`, `15min`, `30min` или `60min`.
 
 
-### Using import
+### Через импорт модуля
 
-Let us look only one simple example of requesting history of IBM stock as pandas dataframe:
+Давайте рассмотрим только один простой пример запроса исторических данных по акциям IBM и как сохранить их в pandas dataframe:
 ```
 from avstockparser.AVStockParser import AVParseToPD as Parser
 
-# Requesting historical candles and save the data into a pandas dataframe variable.
-# If the variable output is not specified, the module only returns data in pandas dataframe format.
+# Запрашиваем исторические данные по свечам и сохраняем их в переменную pandas dataframe.
+# Если переменная output не указана, то метод AVParseToPD не будет сохранять текстовый файл,
+# а только вернёт данные в формате pandas dataframe.
 df = Parser(
     reqURL=r"https://www.alphavantage.co/query?",
     apiKey="demo",
@@ -171,7 +171,7 @@ df = Parser(
 print(df)
 ```
 
-Output is like this:
+При запуске получим аналогичный вывод:
 ```
 AVStockParser.py    L:119  INFO    [2020-12-25 01:49:51,612] It was received 2001 candlesticks data from Alpha Vantage service
 AVStockParser.py    L:120  INFO    [2020-12-25 01:49:51,612] Showing last 3 rows with Time Zone: 'US/Eastern':
@@ -198,4 +198,4 @@ Process finished with exit code 0
 ```
 
 
-I wish you success in the automation of exchange trading! ;)
+Успехов вам в автоматизации биржевой торговли! ;)
