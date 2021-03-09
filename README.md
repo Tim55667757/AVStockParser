@@ -1,6 +1,6 @@
 # AVStockParser
 
-[![build](https://travis-ci.org/Tim55667757/AVStockParser.svg)](https://travis-ci.org/Tim55667757/AVStockParser)
+[![Build Status](https://travis-ci.com/Tim55667757/AVStockParser.svg?branch=master)](https://travis-ci.com/Tim55667757/AVStockParser)
 [![pypi](https://img.shields.io/pypi/v/AVStockParser.svg)](https://pypi.python.org/pypi/AVStockParser)
 [![license](https://img.shields.io/pypi/l/AVStockParser.svg)](https://github.com/Tim55667757/AVStockParser/blob/master/LICENSE)
 
