@@ -7,7 +7,7 @@
 from setuptools import setup
 import os
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 devStatus = "4 - Beta"
 
@@ -34,7 +34,7 @@ setup(
 
     version=__version__,
 
-    description="Get time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings.",
+    description="Get time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. Also you can draw an interactive chart.",
 
     long_description="GitHub Pages: https://tim55667757.github.io/AVStockParser",
 
@@ -67,36 +67,27 @@ setup(
         "stock",
         "trade",
         "candlestick",
+        "chart",
         "parser",
         "alphavantage",
+    ],
+
+    tests_require=[
+        "pytest>=6.2.2",
+        "requests>=2.25.1",
+        "pandas>=1.2.2",
+        "pricegenerator>=1.2.36",
+    ],
+
+    install_requires=[
+        "requests>=2.25.1",
+        "pandas>=1.2.2",
+        "pricegenerator>=1.2.36",
     ],
 
     packages=[
         "avstockparser",
     ],
-
-    tests_require=[
-        "pytest",
-        "requests",
-        "pandas",
-    ],
-
-    install_requires=[
-        "requests",
-        "pandas",
-    ],
-
-    package_data={
-        "": [
-            "./avstockparser/*.py",
-
-            "./tests/*.py",
-
-            "LICENSE",
-            "README.md",
-            "README_RU.md",
-        ],
-    },
 
     zip_safe=True,
 )
