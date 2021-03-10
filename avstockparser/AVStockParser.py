@@ -22,13 +22,16 @@ from argparse import ArgumentParser
 import avstockparser.UniLogger as uLog
 import traceback as tb
 
+from pricegenerator import PriceGenerator as pg
+
 
 # --- Common technical parameters:
 
 uLogger = uLog.UniLogger
 uLogger.level = 10  # debug level by default
 uLogger.handlers[0].level = 20  # info level by default for STDOUT
-uLogger.handlers[1].level = 10  # debug level by default for log.txt
+uLogger.handlers[1].level = 50  # disable duplicate logging added by PriceGenerator
+# uLogger.handlers[1].level = 10  # debug level by default for log.txt
 
 
 def AVParseToPD(reqURL=r"https://www.alphavantage.co/query?", apiKey=None, output=None, ticker=None,
@@ -99,11 +102,11 @@ def AVParseToPD(reqURL=r"https://www.alphavantage.co/query?", apiKey=None, outpu
         data={
             "date": dates,
             "time": dates,
-            "open": [rawDataDict[item]["1. open"] for item in dateKeys],
-            "high": [rawDataDict[item]["2. high"] for item in dateKeys],
-            "low": [rawDataDict[item]["3. low"] for item in dateKeys],
-            "close": [rawDataDict[item]["4. close"] for item in dateKeys],
-            "volume": [rawDataDict[item]["5. volume"] for item in dateKeys],
+            "open": [float(rawDataDict[item]["1. open"]) for item in dateKeys],
+            "high": [float(rawDataDict[item]["2. high"]) for item in dateKeys],
+            "low": [float(rawDataDict[item]["3. low"]) for item in dateKeys],
+            "close": [float(rawDataDict[item]["4. close"]) for item in dateKeys],
+            "volume": [int(rawDataDict[item]["5. volume"]) for item in dateKeys],
         },
         index=range(len(rawDataDict)),
         columns=["date", "time", "open", "high", "low", "close", "volume"],
@@ -138,6 +141,20 @@ def AVParseToPD(reqURL=r"https://www.alphavantage.co/query?", apiKey=None, outpu
     return df
 
 
+def Render(prices: pd.DataFrame, name="Example instrument", show=True):
+    """
+    Render interactive chart using PriceGenerator library.
+    :param prices: Pandas dataframe with prices.
+    :param name: Instrument's name for chart title.
+    :param show: Show in browser immediately if True.
+    """
+    chart = pg.PriceGenerator()
+    prices["datetime"] = pd.to_datetime(prices["date"] + " " + prices["time"])
+    chart.ticker = os.path.basename(name)
+    chart.prices = prices
+    chart.RenderBokeh(viewInBrowser=show)
+
+
 def ParseArgs():
     """
     Function get and parse command line keys.
@@ -159,6 +176,7 @@ def ParseArgs():
 
     # commands:
     parser.add_argument("--parse", action="store_true", help="Command: get, parse, and save stock history as pandas dataframe or .csv-file if --output key is defined.")
+    parser.add_argument("--render", action="store_true", help="Command: use PriceGenerator module to render interactive chart from parsed data. This key only used with --parse key.")
 
     cmdArgs = parser.parse_args()
     return cmdArgs
@@ -184,7 +202,8 @@ def Main():
     if args.debug_level:
         uLogger.level = 10  # always debug level by default
         uLogger.handlers[0].level = args.debug_level  # level for STDOUT
-        uLogger.handlers[1].level = 10  # always debug level for log.txt
+        uLogger.handlers[1].level = 50  # disable duplicate logging added by PriceGenerator
+        # uLogger.handlers[1].level = 10  # always debug level for log.txt
 
     start = datetime.now()
     uLogger.debug("Alpha Vantage data parser started: {}".format(start.strftime("%Y-%m-%d %H:%M:%S")))
@@ -219,7 +238,10 @@ def Main():
             raise Exception("One of the possible commands must be selected! See: python AVStockParser.py --help")
 
         if args.parse:
-            AVParseToPD(reqURL, apiKey, output, ticker, period, interval, size, retry)
+            parsedData = AVParseToPD(reqURL, apiKey, output, ticker, period, interval, size, retry)
+
+            if args.render and parsedData is not None:
+                Render(prices=parsedData, name=ticker, show=True)
 
     except Exception:
         exc = tb.format_exc().split("\n")
