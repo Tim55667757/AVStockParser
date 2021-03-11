@@ -12,7 +12,7 @@ class TestBaseMethods:
     def init(self):
         AVStockParser.uLogger.level = 50  # Disable debug logging while test, logger CRITICAL = 50
         AVStockParser.uLogger.handlers[0].level = 50  # Disable debug logging for STDOUT
-        AVStockParser.uLogger.handlers[1].level = 50  # Disable debug logging for log.txt
+        # AVStockParser.uLogger.handlers[1].level = 50  # Disable debug logging for log.txt
         # set up default parameters:
         self.reqURL = r"https://www.alphavantage.co/query?"
         self.apiKey = "demo"
@@ -70,3 +70,18 @@ class TestBaseMethods:
         for test in testData:
             AVStockParser.AVParseToPD(**test)
             assert os.path.exists(test["output"]), "Output file must be created after parser work finished!"
+
+    def test_Render(self):
+        test = {
+            "reqURL": self.reqURL,
+            "apiKey": self.apiKey,
+            "output": None,
+            "ticker": self.ticker,
+            "period": "TIME_SERIES_DAILY",
+            "size": "full",
+            "retry": self.retry,
+        }
+        parsedData = AVStockParser.AVParseToPD(**test)
+        AVStockParser.Render(prices=parsedData, name="TEST", show=False)
+        assert os.path.exists(os.path.abspath("index.html")), "index.html file must be created!"
+        assert os.path.exists(os.path.abspath("index.html.md")), "index.html.md file must be created!"

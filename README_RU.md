@@ -1,14 +1,14 @@
 # AVStockParser
 
-[![build](https://travis-ci.org/Tim55667757/AVStockParser.svg)](https://travis-ci.org/Tim55667757/AVStockParser)
+[![Build Status](https://travis-ci.com/Tim55667757/AVStockParser.svg?branch=master)](https://travis-ci.com/Tim55667757/AVStockParser)
 [![pypi](https://img.shields.io/pypi/v/AVStockParser.svg)](https://pypi.python.org/pypi/AVStockParser)
 [![license](https://img.shields.io/pypi/l/AVStockParser.svg)](https://github.com/Tim55667757/AVStockParser/blob/master/LICENSE)
 
 Трейдерам необходимо получать исторические данные по акциям для дальнейшего анализа цен и построения графиков. Чаще всего эти данные платные или приходится тратить много времени и вручную загружать их со специальных сайтов.
 
-Но есть множество онлайн-сервисов, которые предоставляют API для автоматического получения данных о ценах на акции. Например, Alpha Vantage. Основной источник данных для этого сервиса — биржа NASDAQ. Подробная документация по работе с Alpha Vantage API здесь: https://www.alphavantage.co/documentation/
+Но есть множество онлайн-сервисов, которые предоставляют API для автоматического получения данных о ценах на акции бесплатно, но с некоторой задержкой. Например, Alpha Vantage. Основной источник данных для этого сервиса — биржа NASDAQ. Подробная документация по работе с Alpha Vantage API здесь: https://www.alphavantage.co/documentation/
 
-**AVStockParser** это простая библиотека, которую можно использовать как python-модуль или запускать из командной строки и получать данные от Alpha Vantage. AVStockParser запрашивает историю цен на акции в формате .json с сайта www.alphavantage.co и конвертирует их в pandas dataframe или в .csv-файл, которые содержат OHLCV-свечи в каждой строке. Вы получаете таблицу, которая содержит колонки данных в следующей последовательности: "date", "time", "open", "high", "low", "close", "volume". Одна строка — это набор данных для построения одной "японской свечи" (candlestick).
+**AVStockParser** это простая библиотека, которую можно использовать как python-модуль или запускать из командной строки и получать данные от Alpha Vantage. AVStockParser запрашивает историю цен на акции в формате .json с сайта www.alphavantage.co и конвертирует их в Pandas dataframe или в .csv-файл, которые содержат OHLCV-свечи в каждой строке. Вы получаете таблицу, которая содержит колонки данных в следующей последовательности: "date", "time", "open", "high", "low", "close", "volume". Одна строка — это набор данных для построения одной "японской свечи" (candlestick). Дополнительно можно отобразить данные на простом интерактивном свечном графике.
 
 Инструкция на английском здесь (see english readme here): https://github.com/Tim55667757/AVStockParser/blob/master/README.md
 
@@ -43,44 +43,47 @@ avstockparser --help
 
 Вывод:
 ```
-usage: python AVStockParser.py [some options] [one command]
+Запуск: python AVStockParser.py [параметры] [одна или несколько команд]
 
-Alpha Vantage data parser. Get, parse, and save stock history as .csv-file or
-pandas dataframe. See examples: https://tim55667757.github.io/AVStockParser
+Получение данных о ценах акций через сервис Alpha Vantage. Можно получить
+и сохранить исторические данные по ценам акций в .csv-файл или в виде
+Pandas dataframe. Примеры: https://tim55667757.github.io/AVStockParser
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --api-key API_KEY     Option (required): Alpha Vantage service's api key.
-                        Request free api key at this page:
+Возможные параметры командной строки:
+  -h, --help            Показать эту подсказку и выйти
+  --api-key API_KEY     Параметр (обязательный): апи-кей для сервиса Alpha Vantage.
+                        Запросить ключ для бесплатного доступа можно тут:
                         https://www.alphavantage.co/support/#api-key
-  --ticker TICKER       Option (required): stock ticker, e.g., 'GOOGL' or
-                        'YNDX'.
-  --output OUTPUT       Option: full path to .csv output file. Default is None
-                        mean that function return only pandas dataframe.
-  --period PERIOD       Option: values can be 'TIME_SERIES_INTRADAY',
-                        'TIME_SERIES_DAILY', 'TIME_SERIES_WEEKLY',
-                        'TIME_SERIES_MONTHLY'. Default: 'TIME_SERIES_INTRADAY'
-                        means that api returns intraday stock history data
-                        with pre-define interval. More examples:
+  --ticker TICKER       Параметр (обязательный): тикер акции, например,
+                        'GOOGL' или 'YNDX'.
+  --output OUTPUT       Параметр: полный путь до .csv-файла. По умолчанию None
+                        означает, что будет получен только Pandas dataframe.
+  --period PERIOD       Параметр: можно использовать значения 'TIME_SERIES_INTRADAY',
+                        'TIME_SERIES_DAILY', 'TIME_SERIES_WEEKLY' или
+                        'TIME_SERIES_MONTHLY'. По умолчанию: 'TIME_SERIES_INTRADAY',
+                        что означает, что api вернёт внутридневную историю цен для
+                        предопределённого интервала. Больше примеров здесь:
                         https://www.alphavantage.co/documentation/
-  --interval INTERVAL   Option: '1min', '5min', '15min', '30min' or '60min'.
-                        This is intraday period used only with
-                        --period='TIME_SERIES_INTRADAY' key. Default: '60min'
-                        means that api returns stock history with 60 min
-                        interval.
-  --size SIZE           Option: how many last candles returns for history.
-                        Values can be 'full' or 'compact'. This parameter used
-                        for 'outputsize' AV api parameter. Default: 'compact'
-                        means that api returns only 100 values of stock
-                        history data.
-  --retry RETRY         Option: number of connections retry for data request
-                        before raise exception. Default is 3.
+  --interval INTERVAL   Параметр: '1min', '5min', '15min', '30min' или '60min'.
+                        Интервал используется только для внутридневной истории цен
+                        для ключа --period='TIME_SERIES_INTRADAY'. По умолчанию: '60min',
+                        что означает, что api вернёт внутридневную историю цен
+                        и каждая свеча будет иметь интервал в 60 минут.
+  --size SIZE           Параметр: сколько исторических свечей нужно скачать.
+                        Значения могут быть 'full' или 'compact'. Этот параметр
+                        использует сервис AV для параметра запроса 'outputsize'.
+                        По умолчанию: 'compact' означает, что api вернёт 100 свечей.
+  --retry RETRY         Параметр: количество попыток подключения к сервису AV.
+                        По умолчанию: 3.
   --debug-level DEBUG_LEVEL
-                        Option: showing STDOUT messages of minimal debug
-                        level, e.g., 10 = DEBUG, 20 = INFO, 30 = WARNING, 40 =
-                        ERROR, 50 = CRITICAL.
-  --parse               Command: get, parse, and save stock history as pandas
-                        dataframe or .csv-file if --output key is defined.
+                        Параметр: уровень логирования для STDOUT,
+                        например, 10 = DEBUG, 20 = INFO, 30 = WARNING,
+                        40 = ERROR, 50 = CRITICAL.
+  --parse               Команда: скачать историю цен как Pandas dataframe
+                        или как .csv-файл (если ключ --output будет задан).
+  --render              Команда: использовать библиотеку PriceGenerator для отрисовки
+                        интерактивного графика цен после парсинга истории. Этот ключ
+                        можно использовать только с ключом --parse.
 ```
 
 Давайте попробуем получить дневные свечи по акциям Яндекса (тикер YNDX) и сохранить их в файл YNDX1440.csv. Команда может выглядеть как-то так:
@@ -103,8 +106,6 @@ AVStockParser.py    L:127  INFO    [2020-12-25 01:03:15,027] Stock history saved
 AVStockParser.py    L:229  DEBUG   [2020-12-25 01:03:15,027] All Alpha Vantage data parser operations are finished success (summary code is 0).
 AVStockParser.py    L:234  DEBUG   [2020-12-25 01:03:15,028] Alpha Vantage data parser work duration: 0:00:01.568581
 AVStockParser.py    L:235  DEBUG   [2020-12-25 01:03:15,028] Alpha Vantage data parser finished: 2020-12-25 01:03:15
-
-Process finished with exit code 0
 ```
 
 Для консольного ключа `--period` вы можете указывать значения: `TIME_SERIES_DAILY`, `TIME_SERIES_WEEKLY` и `TIME_SERIES_MONTHLY` для получения дневных, недельных и месячных свечей соответственно. По умолчанию используется значение `TIME_SERIES_INTRADAY`.
@@ -129,8 +130,6 @@ AVStockParser.py    L:127  INFO    [2020-12-25 01:09:45,555] Stock history saved
 AVStockParser.py    L:229  DEBUG   [2020-12-25 01:09:45,555] All Alpha Vantage data parser operations are finished success (summary code is 0).
 AVStockParser.py    L:234  DEBUG   [2020-12-25 01:09:45,555] Alpha Vantage data parser work duration: 0:00:00.953904
 AVStockParser.py    L:235  DEBUG   [2020-12-25 01:09:45,555] Alpha Vantage data parser finished: 2020-12-25 01:09:45
-
-Process finished with exit code 0
 ```
 
 Файл ./MMM60.csv из этого примера будет содержать похожие данные по часовым свечам и столбцы: "date", "time", "open", "high", "low", "close", "volume":
@@ -148,16 +147,28 @@ Process finished with exit code 0
 
 Ключ `--interval` используется только с ключом и значением `--period TIME_SERIES_INTRADAY`. Интервалы для внутридневных свечей могут принимать значения: `1min`, `5min`, `15min`, `30min` или `60min`.
 
+Кроме того, вы можете построить интерактивный график цен (используя библиотеку [PriceGenerator](https://github.com/Tim55667757/PriceGenerator)). Для этого укажите ключ `--render` после ключа `--parse`:
+```commandline
+avstockparser --debug-level 10 --api-key "your token here" --ticker YNDX --period TIME_SERIES_DAILY --size compact --output YNDX1440.csv --parse --render
+```
+
+После выполнения команды выше вы получите три файла:
+- `YNDX1440.csv` — файл в формате .csv, который содержит цены (пример: [./media/YNDX1440.csv](./media/YNDX1440.csv));
+- `index.html` — график цен и статистику, отрисованные при помощи библиотеки Bokeh и сохранённые в .html-файл (пример: [./media/index.html](./media/index.html));
+- `index.html.md` — статистика в текстовом виде, сохранённая в маркдаун-формате (пример: [./media/index.html.md](./media/index.html.md)).
+
+![](./media/index.html.png)
+
 
 ### Через импорт модуля
 
-Давайте рассмотрим только один простой пример запроса исторических данных по акциям IBM и как сохранить их в pandas dataframe:
+Давайте рассмотрим только один простой пример запроса исторических данных по акциям IBM и как сохранить их в Pandas dataframe:
 ```
 from avstockparser.AVStockParser import AVParseToPD as Parser
 
-# Запрашиваем исторические данные по свечам и сохраняем их в переменную pandas dataframe.
+# Запрашиваем исторические данные по свечам и сохраняем их в переменную Pandas dataframe.
 # Если переменная output не указана, то метод AVParseToPD не будет сохранять текстовый файл,
-# а только вернёт данные в формате pandas dataframe.
+# а только вернёт данные в формате Pandas dataframe.
 df = Parser(
     reqURL=r"https://www.alphavantage.co/query?",
     apiKey="demo",
@@ -193,8 +204,6 @@ AVStockParser.py    L:123  INFO    [2020-12-25 01:49:51,617] 2000  2020.12.23  2
 2000  2020.12.23  20:00  123.9100  123.9100  123.9100  123.9100    225
 
 [2001 rows x 7 columns]
-
-Process finished with exit code 0
 ```
 
 
