@@ -8,7 +8,7 @@ All traders sometimes need to get historical data of stocks for further price an
 
 But there are many online services that provide APIs to get stock price data automatically. One of this service is Alpha Vantage. The main data source for this service is the NASDAQ exchange. Detailed documentation on working with Alpha Vantage API here: https://www.alphavantage.co/documentation/
 
-**AVStockParser** is a simple library that can be use as python module or console CLI program. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into pandas dataframe or .csv file with OHLCV-candlestick in every strings. You will get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick.
+**AVStockParser** is a simple library that can be use as python module or console CLI program. AVStockParser request time series with stock history data in .json-format from www.alphavantage.co and convert into Pandas dataframe or .csv file with OHLCV-candlestick in every strings. You will get a table that contains columns of data in the following sequence: "date", "time", "open", "high", "low", "close", "volume". One line is a set of data for plotting one candlestick. In addition, you can draw simple interactive chart of candlesticks.
 
 See russian readme here (инструкция на русском здесь): https://github.com/Tim55667757/AVStockParser/blob/master/README_RU.md
 
@@ -47,7 +47,7 @@ Output:
 usage: python AVStockParser.py [some options] [one command]
 
 Alpha Vantage data parser. Get, parse, and save stock history as .csv-file or
-pandas dataframe. See examples: https://tim55667757.github.io/AVStockParser
+Pandas dataframe. See examples: https://tim55667757.github.io/AVStockParser
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -57,7 +57,7 @@ optional arguments:
   --ticker TICKER       Option (required): stock ticker, e.g., 'GOOGL' or
                         'YNDX'.
   --output OUTPUT       Option: full path to .csv output file. Default is None
-                        mean that function return only pandas dataframe.
+                        mean that function return only Pandas dataframe.
   --period PERIOD       Option: values can be 'TIME_SERIES_INTRADAY',
                         'TIME_SERIES_DAILY', 'TIME_SERIES_WEEKLY',
                         'TIME_SERIES_MONTHLY'. Default: 'TIME_SERIES_INTRADAY'
@@ -80,8 +80,11 @@ optional arguments:
                         Option: showing STDOUT messages of minimal debug
                         level, e.g., 10 = DEBUG, 20 = INFO, 30 = WARNING, 40 =
                         ERROR, 50 = CRITICAL.
-  --parse               Command: get, parse, and save stock history as pandas
+  --parse               Command: get, parse, and save stock history as Pandas
                         dataframe or .csv-file if --output key is defined.
+  --render              Command: use PriceGenerator module to render
+                        interactive chart from parsed data. This key only used
+                        with --parse key.
 ```
 
 Let us try to get daily candlesticks of YNDX stock into file YNDX1440.csv. The command may be like this:
@@ -104,8 +107,6 @@ AVStockParser.py    L:127  INFO    [2020-12-25 01:03:15,027] Stock history saved
 AVStockParser.py    L:229  DEBUG   [2020-12-25 01:03:15,027] All Alpha Vantage data parser operations are finished success (summary code is 0).
 AVStockParser.py    L:234  DEBUG   [2020-12-25 01:03:15,028] Alpha Vantage data parser work duration: 0:00:01.568581
 AVStockParser.py    L:235  DEBUG   [2020-12-25 01:03:15,028] Alpha Vantage data parser finished: 2020-12-25 01:03:15
-
-Process finished with exit code 0
 ```
 
 For key `--period` you can use values: `TIME_SERIES_DAILY`, `TIME_SERIES_WEEKLY` and `TIME_SERIES_MONTHLY` to get daily, weekly, and monthly candlesticks. Default is `TIME_SERIES_INTRADAY`.
@@ -130,8 +131,6 @@ AVStockParser.py    L:127  INFO    [2020-12-25 01:09:45,555] Stock history saved
 AVStockParser.py    L:229  DEBUG   [2020-12-25 01:09:45,555] All Alpha Vantage data parser operations are finished success (summary code is 0).
 AVStockParser.py    L:234  DEBUG   [2020-12-25 01:09:45,555] Alpha Vantage data parser work duration: 0:00:00.953904
 AVStockParser.py    L:235  DEBUG   [2020-12-25 01:09:45,555] Alpha Vantage data parser finished: 2020-12-25 01:09:45
-
-Process finished with exit code 0
 ```
 
 The file ./MMM60.csv will be completely similar and include the same columns but with hourly data: "date", "time", "open", "high", "low", "close", "volume":
@@ -149,15 +148,27 @@ Key `--size` may be `full` (Alpha Vantage service return a lot of history candle
 
 Key `--interval` use only with `--period TIME_SERIES_INTRADAY`. Intraday intervals of history candles may be only `1min`, `5min`, `15min`, `30min` or `60min`.
 
+Also, you can draw an interactive chart (see: [PriceGenerator](https://github.com/Tim55667757/PriceGenerator) library) using `--render` key after `--parse` key:
+```commandline
+avstockparser --debug-level 10 --api-key "your token here" --ticker YNDX --period TIME_SERIES_DAILY --size compact --output YNDX1440.csv --parse --render
+```
+
+After running the command above, you will get three files:
+- `YNDX1440.csv` — .csv-file containing prices (example: [./media/YNDX1440.csv](./media/YNDX1440.csv));
+- `index.html` — price chart and statistics drawn using the Bokeh library and saved to an .html-file (example: [./media/index.html](./media/index.html));
+- `index.html.md` — statistics as simple text, saved in markdown format (example: [./media/index.html.md](./media/index.html.md)).
+
+![](./media/index.html.png)
+
 
 ### Using import
 
-Let us look only one simple example of requesting history of IBM stock as pandas dataframe:
+Let us look only one simple example of requesting history of IBM stock as Pandas dataframe:
 ```
 from avstockparser.AVStockParser import AVParseToPD as Parser
 
-# Requesting historical candles and save the data into a pandas dataframe variable.
-# If the variable output is not specified, the module only returns data in pandas dataframe format.
+# Requesting historical candles and save the data into a Pandas dataframe variable.
+# If the variable output is not specified, the module only returns data in Pandas dataframe format.
 df = Parser(
     reqURL=r"https://www.alphavantage.co/query?",
     apiKey="demo",
@@ -193,8 +204,6 @@ AVStockParser.py    L:123  INFO    [2020-12-25 01:49:51,617] 2000  2020.12.23  2
 2000  2020.12.23  20:00  123.9100  123.9100  123.9100  123.9100    225
 
 [2001 rows x 7 columns]
-
-Process finished with exit code 0
 ```
 
 
